@@ -2,7 +2,7 @@ import './App.css';
 import { useState } from 'react';
 import InfoButton from './components/InfoButton';
 import Modal from './components/Modal';
-import EmbediFrame from './components/EmbediFrame';
+import AudioPlayer from './components/AudioPlayer';
 
 function App() {
 
@@ -12,6 +12,7 @@ function App() {
       <button onClick={()=>setShowModal(true)}>
       <InfoButton />
       </button>
+      <AudioPlayer />
       {showModal && <Modal setShowModal={setShowModal}/>}
     </div>
   );

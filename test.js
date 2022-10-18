@@ -21,5 +21,23 @@ request.post(authOptions, function(error, response, body) {
     // use the access token to access the Spotify Web API
     var token = body.access_token;
     console.log(token);
+
+    const getOptions = {
+      url: 'https://api.spotify.com/v1/tracks/1DrlLvlYd1FIjNavRm6NdX',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    }
+
+    request.get(getOptions, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        console.log(response);
+        console.log(response.body.linked_from.preview_url);
+      } else {
+        console.log(error);
+        console.log(response);
+      }
+    })
   }
 });

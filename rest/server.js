@@ -46,6 +46,7 @@ const getPlaylistTracks = async accessToken => {
 
 
 app.get('/', (req, res)=>{
+  console.log('Get request received.');
   getApiToken()
     .then( token => getPlaylistTracks(token) )
     .then( list => res.json(list));

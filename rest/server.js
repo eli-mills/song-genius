@@ -24,8 +24,31 @@ const getApiToken = async () => {
   return access_token;
 }
 
+
+
+const getPlaylistTracks = async accessToken => {
+  const queryParams = new URLSearchParams({
+    fields: 'items(track(name)),items(track(preview_url))',
+    limit: 50
+  });
+  const playlistId = '37i9dQZF1E4ucISj07fVUh';
+  const playlistPromise = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?${queryParams}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  const trackList =  (await playlistPromise.json());
+  return trackList.items;
+}
+
+
+
 app.get('/', (req, res)=>{
-  const accessToken = getApiToken();
+  getApiToken()
+    .then( token => getPlaylistTracks(token) )
+    .then( list => res.json(list));
 });
 
 app.listen(PORT);

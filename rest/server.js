@@ -6,7 +6,7 @@ const client_secret = creds['CLIENT_SECRET'];
 const fetch = require('node-fetch');
 const express = require('express');
 const app = express();
-const PORT = 3100;
+const PORT = 3000;
 
 const getApiToken = async () => {
   const clientCreds = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
@@ -48,11 +48,15 @@ const getPlaylistTracks = async accessToken => {
 app.get('/', (req, res)=>{
   console.log('Get request received.');
   getApiToken()
-    .then( token => getPlaylistTracks(token) )
-    .then( list => res.json(list));
+    .then( token => {
+      console.log(`Token received: ${token}`);
+      console.log(typeof(token));
+      res.send(token);
+    })
+    .catch(err=>console.log(`There was an error:\n\n${err}`));
 });
 
-app.listen(PORT);
+app.listen(PORT, ()=>console.log(`Server listening on port ${PORT}`));
 
 
 // const getOptions = {

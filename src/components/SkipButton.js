@@ -1,12 +1,10 @@
 import React from 'react';
 import {BsSkipForwardFill} from 'react-icons/bs';
 
-function SkipButton ( {state, trackList} ) {
-    const {trackIndex, setTrackIndex, setCurrentTrack} = state;
+function SkipButton ( {nextTrack} ) {
     const handleSkip = e => {
         e.preventDefault();
-        setTrackIndex((trackIndex + 1)%trackList.length);
-        setCurrentTrack(trackList[trackIndex].track);
+        nextTrack();
     }
     return (
         <button onClick={ handleSkip }>

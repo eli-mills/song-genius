@@ -1,5 +1,5 @@
 {
-  "proxy": "http://localhost:3100",
+  "proxy": "http://localhost:3000",
   "name": "cs361-project",
   "version": "0.1.0",
   "private": true,

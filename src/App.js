@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfoButton from './components/InfoButton';
 import Modal from './components/Modal';
 import AudioPlayer from './components/AudioPlayer';
@@ -8,12 +8,27 @@ import GuessForm from './components/GuessForm';
 import playlist from './data/playlist';
 
 function App() {
-  const trackList = playlist;
-  
+
+  let [trackList, setTrackList] = useState(null);
   let [showModal, setShowModal] = useState(true);
   let [trackIndex, setTrackIndex] = useState(0);
-  let [currentTrack, setCurrentTrack] = useState(trackList[trackIndex].track);  
+  let [currentTrack, setCurrentTrack] = useState(0);  
   let [userAnswer, setUserAnswer] = useState("");
+
+  const getData = async () => {
+    try {
+      console.log("Sending fetch request.");
+      const data = await fetch("/", {headers: {"Accept":"application/json"}});
+      const dataParsed = await data.json();
+      console.log(`Received data: ${dataParsed}`);
+      setTrackList(dataParsed);
+      setCurrentTrack(trackList[trackIndex].track);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(()=>{getData()}, []);
 
   const nextTrack = () => {
     console.log("next track triggered");

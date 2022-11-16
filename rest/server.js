@@ -39,7 +39,7 @@ const getPlaylistTracks = async accessToken => {
 }
 
 
-app.get('/', async (req, res, next)=>{
+app.get('/api', async (req, res, next)=>{
   
   console.log('Get request received.');
 

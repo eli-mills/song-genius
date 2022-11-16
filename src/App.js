@@ -31,8 +31,13 @@ function App() {
 
   const nextTrack = () => {
     console.log("next track triggered");
-    setTrackIndex((trackIndex + 1)%trackList.length);
-    setCurrentTrack(trackList[trackIndex].track);
+    console.log(`Current trackIndex=${trackIndex}`);
+    console.log(`Current track=${currentTrack.name}`);
+    const newIndex = (trackIndex + 1)%trackList.length;
+    setTrackIndex(newIndex);
+    setCurrentTrack(trackList[newIndex].track);
+    console.log(`New trackIndex=${trackIndex}`);
+    console.log(`New track=${currentTrack.name}`);
     setUserAnswer("");
   }
 

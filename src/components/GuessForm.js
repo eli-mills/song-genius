@@ -4,7 +4,7 @@ function GuessForm ( { currentTrack, nextTrack, userAnswer, setUserAnswer } ) {
     
     const evaluateAnswer = (e) => {
         e.preventDefault();
-        if ( userAnswer === currentTrack.name ) {
+        if ( userAnswer.toLowerCase() === currentTrack.name.toLowerCase() ) {
             console.log("correct");
             setUserAnswer("");
             nextTrack();

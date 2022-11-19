@@ -39,6 +39,7 @@ function App() {
       const dataParsed = await data.json();
       setTrackList(dataParsed);
       setCurrentTrack(dataParsed[0].track);
+      setTrackIndex(0);
     })();
   }, [plOptions]);
 

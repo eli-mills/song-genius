@@ -142,7 +142,9 @@ app.get('/api/plTracks/:playlistId', async (req, res, next)=>{
 
   try {
     const playlistTracks = await getPlaylistTracks(playlistId);
-    res.json(playlistTracks);
+    // Eliminate null preview_urls
+    const cleanedPlaylistTracks = playlistTracks.filter((el)=>el.track["preview_url"] != null);
+    res.json(cleanedPlaylistTracks);
 
   } catch (err) {
     console.error(`Server error when retrieving tracks for playlist ID ${playlistId}:\n${err}`);

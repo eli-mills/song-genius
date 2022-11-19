@@ -1,15 +1,34 @@
-const creds = require('./client-creds');
-
-const client_id = creds['CLIENT_ID'];
-const client_secret = creds['CLIENT_SECRET'];
-let accessToken;
-
-const fetch = require('node-fetch');
+/*****************************
+    SERVER INITIALIZATIONS
+*****************************/
 const express = require('express');
+const fetch = require('node-fetch');
 const app = express();
 const PORT = 3000;
 
 
+/*************************************
+    SPOTIFY API CLIENT CREDENTIALS
+*************************************/
+const creds = require('./client-creds');
+const client_id = creds['CLIENT_ID'];
+const client_secret = creds['CLIENT_SECRET'];
+let accessToken;
+
+
+/**************
+    METHODS
+***************/
+
+const getHeaders = () => {return {Authorization:`Bearer ${accessToken}`,'Content-Type':'application/json'}};
+
+
+/**
+ * Function: getApiToken
+ *    Sends Spotify API client credentials to token generator microservice. 
+ *    Expects to receive a valid bearer access token from microservice and
+ *    sets the global variable accessToken to this value.
+ */
 const getApiToken = async () => {
   const urlString = `https://helpmeeeeeee.herokuapp.com/credentials/${client_id}/${client_secret}`;
   console.log("Sending request to token microservice, awaiting.");
@@ -19,70 +38,117 @@ const getApiToken = async () => {
   console.log(`accessToken = ${accessToken}`);
 }
 
-const getHeaders = () => {return {Authorization:`Bearer ${accessToken}`,'Content-Type':'application/json'}};
 
+/**
+ * Function: requestSpotify
+ *    Attempts to send a request with the given URL add-on to the Spotify API
+ *    access URL. If request fails, updates the global variable accessToken and
+ *    tries again. If second request fails, returns the error.
+ * 
+ * Parameters:
+ *    urlQuery (string): URL-encoded string to add on to Spotify API access URL
+ * 
+ * Returns:
+ *    Promise to resolve to JSON-parsed results from Spotify API.
+ * 
+ */
 const requestSpotify = async urlQuery => {
   if (!accessToken) {
     await getApiToken();
   }
 
   const url = `https://api.spotify.com/v1/${urlQuery}`;
+
+  console.log(`Server sending request to ${url}`);
   
-  return fetch(url, {headers: getHeaders()})
+  return fetch(url, {headers: getHeaders()})        // Attempt with current accessToken
     .then( (res) => res.json() )
     .catch( () => {
-      getApiToken()
+      getApiToken()                                 // Refresh accessToken and attempt again
       .then(()=>fetch(url, {headers: getHeaders()}))
       .then((res)=>res.json())
-      .catch((err)=>console.error(err));
+      .catch((err)=>console.error(`Server error in resolving Spotify request to ${url}:\n${err}`));
     });
 }
 
 
-const getPlaylistTracks = async () => {
+/**
+ * Function: getPlaylistTracks
+ *    Requests the Spotify API to fetch the list of tracks in the given playlist.
+ * 
+ * Parameters:
+ *    playlistId (string): the Spotify ID of the desired playlist
+ * 
+ * Returns:
+ *    List of track objects containing the track name and preview URL (both strings).
+ */
+const getPlaylistTracks = async (playlistId) => {
   const queryParams = new URLSearchParams({
     fields: 'items(track(name)),items(track(preview_url))',
     limit: 50
   });
-  const playlistId = '37i9dQZF1E4ucISj07fVUh';
-  // const playlistPromise = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?${queryParams}`, {
-  //   method: 'GET',
-  //   headers: {
-  //     Authorization: `Bearer ${accessToken}`,
-  //     'Content-Type': 'application/json'
-  //   }
-  // });
   const trackList = await requestSpotify(`playlists/${playlistId}/tracks?${queryParams}`);
   return trackList.items;
 }
 
 
-app.get('/api/', async (req, res, next)=>{
+/**
+ * Function: searchForPlaylists
+ *    Sends playlist search request to Spotify API and returns results.
+ * 
+ * Parameters:
+ *    searchTerm (string): URL encoded string to search
+ * 
+ * Returns: 
+ *    List of playlist objects.
+ */
+const searchForPlaylists = async (searchTerm) => {
+  const urlAddon = `search?q=${encodeURIComponent(searchTerm)}&type=playlist`;
+  const playlists = await requestSpotify(urlAddon);
+  return playlists.playlists.items;
+}
+
+
+/************
+    ROUTES
+*************/
+
+
+// ROUTE plSearch: PLAYLIST SEARCH
+app.get('/api/plSearch/:searchTerm', async (req, res, next)=>{
+  // Reference https://developer.spotify.com/documentation/web-api/reference/#/operations/search
   
-  console.log('Get request received.');
   const searchTerm = req.params.searchTerm;
+  console.log(`Server received request for playlists from search term ${searchTerm}`);
 
   try {
-    // Get playlist
-    const playlistItems = await getPlaylistTracks();
+    const playlistOptions = await searchForPlaylists(searchTerm);
+    console.log(`Server sending list of playlists: ${JSON.stringify(playlistOptions)}`);
+    res.json(playlistOptions);
 
-    if (searchTerm) {
-      const results = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchTerm)}&type=playlist`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer BQDnYdI10XFwHIirU43m4enqncNegNlHnzD5eYV-xB4_zAavUl87dBD_z1yGmhgTVs7sj6RvleZLZGEXOixG4aAx9QibheclAXw7_Ge6B4GVzQIw8Go`,
-          'Content-Type': 'application/json'
-        }
-    });
-      const parsedResults = await results.json();
-      res.json(parsedResults.playlists.items[0]);
-    }
-    
-    res.json(playlistItems);
   } catch (err) {
-    console.error(`Error inside get route.\n${err}`);
+    console.error(`Server error when retrieving playlists for search term ${searchTerm}:\n${err}`);
     next(err);
   }
 });
+
+
+// ROUTE plTracks: GET TRACKS FROM PLAYLIST
+app.get('/api/plTracks/:playlistId', async (req, res, next)=>{
+  // Reference https://developer.spotify.com/documentation/web-api/reference/#/operations/get-playlists-tracks
+
+  const playlistId = req.params.playlistId;
+  console.log(`Server received request for playlist tracks for ID ${playlistId}`);
+
+  try {
+    const playlistTracks = await getPlaylistTracks(playlistId);
+    res.json(playlistTracks);
+
+  } catch (err) {
+    console.error(`Server error when retrieving tracks for playlist ID ${playlistId}:\n${err}`);
+    next(err);
+  }
+
+})
 
 app.listen(PORT, ()=>console.log(`Server listening on port ${PORT}`));

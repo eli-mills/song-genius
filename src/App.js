@@ -43,6 +43,9 @@ function App() {
     })();
   }, [plOptions]);
 
+  // Auto-play when track changes
+  useEffect(()=>{if (!showModal) document.getElementById('audioPlayer').play()},[currentTrack, showModal]);
+
   const nextTrack = () => {
     const newIndex = (trackIndex + 1)%trackList.length;
     setTrackIndex(newIndex);

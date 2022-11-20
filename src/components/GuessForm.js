@@ -4,7 +4,9 @@ function GuessForm ( { currentTrack, nextTrack, userAnswer, setUserAnswer } ) {
     
     const evaluateAnswer = (e) => {
         e.preventDefault();
-        if ( userAnswer.toLowerCase() === currentTrack.name.toLowerCase() ) {
+        const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;
+        const trackTitleParsed = currentTrack.name.match(trackTitleRe)[0];
+        if ( userAnswer.toLowerCase() === trackTitleParsed.toLowerCase() ) {
             console.log("correct");
             setUserAnswer("");
             nextTrack();
@@ -16,7 +18,7 @@ function GuessForm ( { currentTrack, nextTrack, userAnswer, setUserAnswer } ) {
     
     return (
         <form>
-            <input type="text" value={userAnswer} onChange={e=>setUserAnswer(e.target.value)}/>
+            <input type="text" autofocus value={userAnswer} onChange={e=>setUserAnswer(e.target.value)}/>
             <button onClick={evaluateAnswer}>Submit Guess</button>
         </form>        
     );

@@ -35,10 +35,8 @@ function App() {
   useEffect(()=>{
     console.log(JSON.stringify(plOptions));
     (async function _ (){
-      const data = await fetch(`/api/plTracks/${plOptions[0].id}`);
-      const dataParsed = await data.json();
-      setTrackList(dataParsed);
-      setCurrentTrack(dataParsed[0].track);
+      setTrackList(plOptions[0]);
+      setCurrentTrack(plOptions[0][0].track);
       setTrackIndex(0);
     })();
   }, [plOptions]);

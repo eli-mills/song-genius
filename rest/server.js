@@ -84,7 +84,7 @@ const requestSpotify = async urlQuery => {
  */
 const getPlaylistTracks = async (playlistId) => {
   const queryParams = new URLSearchParams({
-    fields: 'items(track(name)),items(track(preview_url))',
+    fields: 'items(track(name,artists(name),preview_url,popularity))',
     limit: 50
   });
   const trackList = await requestSpotify(`playlists/${playlistId}/tracks?${queryParams}`);
@@ -109,6 +109,25 @@ const searchForPlaylists = async (searchTerm) => {
 }
 
 
+const getFilteredTracklists = async (playlistOptions) => {
+  const minLength = 10;
+  const maxOutputLength = 5;
+  const minPopularity = 20;
+  const output = [];
+
+  for (pl of playlistOptions) {
+    const trackList = await getPlaylistTracks(pl.id);
+    const temp = trackList.filter(el => el.track["preview_url"] != null && el.track.popularity>=minPopularity);
+    if (temp != [] && temp.length >= minLength) {
+      output.push(temp);
+    }
+    if (output.length >= maxOutputLength) break;
+  }
+  
+  return output;
+}
+
+
 /************
     ROUTES
 *************/
@@ -117,14 +136,15 @@ const searchForPlaylists = async (searchTerm) => {
 // ROUTE plSearch: PLAYLIST SEARCH
 app.get('/api/plSearch/:searchTerm', async (req, res, next)=>{
   // Reference https://developer.spotify.com/documentation/web-api/reference/#/operations/search
-  
+  // result.playlists.items[].(name, description, images[].(url/height/width), tracks.items[])
   const searchTerm = req.params.searchTerm;
   console.log(`Server received request for playlists from search term ${searchTerm}`);
 
   try {
     const playlistOptions = await searchForPlaylists(searchTerm);
-    console.log(`Server sending list of playlists: ${JSON.stringify(playlistOptions)}`);
-    res.json(playlistOptions);
+    const trackLists = await getFilteredTracklists(playlistOptions);
+    console.log(`Server sending list of playlists: ${JSON.stringify(trackLists)}`);
+    res.json(trackLists);
 
   } catch (err) {
     console.error(`Server error when retrieving playlists for search term ${searchTerm}:\n${err}`);
@@ -144,6 +164,7 @@ app.get('/api/plTracks/:playlistId', async (req, res, next)=>{
     const playlistTracks = await getPlaylistTracks(playlistId);
     // Eliminate null preview_urls
     const cleanedPlaylistTracks = playlistTracks.filter((el)=>el.track["preview_url"] != null);
+    console.log(`Sending tracks: ${JSON.stringify(cleanedPlaylistTracks)}`);
     res.json(cleanedPlaylistTracks);
 
   } catch (err) {

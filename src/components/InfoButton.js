@@ -2,10 +2,12 @@ import React from 'react';
 import {AiOutlineInfoCircle} from 'react-icons/ai';
 
 
-function InfoButton () {
+function InfoButton ({setShowModal}) {
     return (
         <div>
-            <AiOutlineInfoCircle />
+            <button onClick={()=>setShowModal(true)} id="infoButton">
+                <AiOutlineInfoCircle />
+            </button>
         </div>        
     );
 }

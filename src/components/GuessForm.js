@@ -16,7 +16,7 @@ function GuessForm ( { currentTrack, nextTrack, userAnswer, setUserAnswer } ) {
     }
     
     return (
-        <form>
+        <form id="guessForm">
             <input type="text" autoFocus value={userAnswer} onChange={e=>setUserAnswer(e.target.value)}/>
             <button onClick={evaluateAnswer}>Submit Guess</button>
         </form>        

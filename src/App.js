@@ -53,9 +53,8 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={()=>setShowModal(true)}>
-      <InfoButton />
-      </button>
+      <InfoButton setShowModal={setShowModal}/>
+      <h1 id="siteLogo">Song Genius</h1>
       <PlaylistSearch setPlOptions={setPlOptions}/>
       <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm currentTrack={currentTrack} nextTrack={nextTrack} userAnswer={userAnswer} setUserAnswer={setUserAnswer}/>

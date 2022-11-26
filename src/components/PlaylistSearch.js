@@ -15,7 +15,7 @@ function PlaylistSearch ( {setPlOptions} ) {
     }
     
     return (
-        <form>
+        <form id="playlistSearch">
             <input type="text" id="plSearchTerm"/>
             <button onClick={submitPlaylistSearch}>Search</button>
 

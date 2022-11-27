@@ -115,17 +115,28 @@ const searchForPlaylists = async (searchTerm) => {
   return playlists.playlists.items;
 }
 
-
+/**
+ * Function: getFilteredTracklists
+ *    Retrieves all tracks for each playlist, then checks for preview URLs and minimum popularity.
+ * 
+ * Parameters:
+ *    playlistOptions (array of Spotify playlist objects): list of playlist to grab songs for
+ * 
+ * Returns:
+ *    Array of arrays of tracks that have preview url's and are >= minPopularity popular.
+ */
 const getFilteredTracklists = async (playlistOptions) => {
-  const minLength = 10;
+  // Define tracklist criteria
+  const minPlaylistLength = 10;
   const maxOutputLength = 5;
   const minPopularity = 20;
-  const output = [];
 
+  // Get tracks for each playlist, then filter
+  const output = [];
   for (pl of playlistOptions) {
     const trackList = await getPlaylistTracks(pl.id);
     const temp = trackList.filter(el => el.track["preview_url"] != null && el.track.popularity>=minPopularity);
-    if (temp != [] && temp.length >= minLength) {
+    if (temp != [] && temp.length >= minPlaylistLength) {
       output.push(temp);
     }
     if (output.length >= maxOutputLength) break;

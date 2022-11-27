@@ -161,6 +161,7 @@ app.get('/api/plSearch/:searchTerm', async (req, res, next)=>{
     const playlistOptions = await searchForPlaylists(searchTerm);
     const trackLists = await getFilteredTracklists(playlistOptions);
     console.log(`Server sending list of playlists: ${JSON.stringify(trackLists)}`);
+    res.header('Access-Control-Allow-Origin', '*');
     res.json(trackLists);
 
   } catch (err) {

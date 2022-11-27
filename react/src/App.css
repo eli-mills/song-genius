@@ -67,18 +67,28 @@ button {
   color: var(--hl);
 }
 
+.plPreview {
+  float: left;
+  margin: .2rem;
+}
+
+.plPreview img {
+  display:block;
+  margin: 0 auto;
+}
+
 #siteLogo {
   color: var(--fg);
   font-family: 'URW Chancery L, cursive';
   font-style: italic;
   text-decoration: underline;
-  position: absolute;
-  top: 0rem;
   font-size: 5rem;
+  display: block;
 }
 
 #playlistSearch {
   margin: 1rem;
+  display:block;
 }
 
 #audioPlayer {
@@ -93,6 +103,13 @@ button {
   position: absolute;
   top: 1rem;
   right: 1rem;
+}
+
+#plSelect {
+  list-style:none;
+  width: 50%;
+  margin-top: 2rem;
+  display: flex;
 }
 
 @media (max-width: 700px) {

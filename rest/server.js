@@ -57,8 +57,6 @@ const requestSpotify = async urlQuery => {
   }
 
   const url = `https://api.spotify.com/v1/${urlQuery}`;
-
-  console.log(`Server sending request to ${url}`);
   
   try {
     let results = await fetch(url, {headers: getHeaders()})        // Attempt with current accessToken
@@ -136,7 +134,12 @@ const getFilteredTracklists = async (playlistOptions) => {
     const trackList = await getPlaylistTracks(pl.id);
     const temp = trackList.filter(el => el.track["preview_url"] != null && el.track.popularity>=minPopularity);
     if (temp != [] && temp.length >= minPlaylistLength) {
-      output.push(temp);
+      output.push({
+        name: pl.name,
+        description: pl.description,
+        imageUrl: pl.images[0].url,
+        tracks: temp
+      });
     }
     if (output.length >= maxOutputLength) break;
   }
@@ -160,7 +163,7 @@ app.get('/api/plSearch/:searchTerm', async (req, res, next)=>{
   try {
     const playlistOptions = await searchForPlaylists(searchTerm);
     const trackLists = await getFilteredTracklists(playlistOptions);
-    console.log(`Server sending list of playlists: ${JSON.stringify(trackLists)}`);
+    console.log(`Server sending list of ${playlistOptions.length} playlists`);
     res.header('Access-Control-Allow-Origin', '*');
     res.json(trackLists);
 
@@ -182,7 +185,7 @@ app.get('/api/plTracks/:playlistId', async (req, res, next)=>{
     const playlistTracks = await getPlaylistTracks(playlistId);
     // Eliminate null preview_urls
     const cleanedPlaylistTracks = playlistTracks.filter((el)=>el.track["preview_url"] != null);
-    console.log(`Sending tracks: ${JSON.stringify(cleanedPlaylistTracks)}`);
+    console.log(`Sending ${cleanedPlaylistTracks.length} tracks.`);
     res.header('Access-Control-Allow-Origin', '*');
     res.json(cleanedPlaylistTracks);
 

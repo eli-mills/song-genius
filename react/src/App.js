@@ -6,6 +6,7 @@ import AudioPlayer from './components/AudioPlayer';
 import SkipButton from './components/SkipButton';
 import GuessForm from './components/GuessForm';
 import PlaylistSearch from './components/PlaylistSearch';
+import PlaylistSelection from './components/PlaylistSelection';
 
 function App() {
 
@@ -15,7 +16,20 @@ function App() {
   let [currentTrack, setCurrentTrack] = useState(0);  
   let [userAnswer, setUserAnswer] = useState("");
   let [plOptions, setPlOptions] = useState([]);
-  const serverUrl = 'https://song-genius-api.onrender.com';
+  const serverUrl = ''//'https://song-genius-api.onrender.com';
+
+  const nextTrack = () => {
+    const newIndex = (trackIndex + 1)%trackList.length;
+    setTrackIndex(newIndex);
+    setCurrentTrack(trackList[newIndex].track);
+    setUserAnswer("");
+  }
+
+  const updateTrackList = tl => {
+    setTrackList(tl);
+    setCurrentTrack(tl[0].track);
+    setTrackIndex(0);
+  }
 
   useEffect(()=>{
     (async function _ () {
@@ -27,8 +41,7 @@ function App() {
         const data = await fetch(`${serverUrl}/api/plTracks/37i9dQZF1DZ06evO4ohLfG`, fetchOptions);
         const dataParsed = await data.json();
         console.log(`Received data: ${JSON.stringify(dataParsed)}`);
-        setTrackList(dataParsed);
-        setCurrentTrack(dataParsed[0].track);
+        updateTrackList(dataParsed);
       } catch (err) {
         console.error(err);
       }
@@ -36,30 +49,22 @@ function App() {
   }, []);
 
   // Temporary: set tracklist to the first item in plOptions when plOptions updates.
-  useEffect(()=>{
-    console.log(JSON.stringify(plOptions));
-    (async function _ (){
-      setTrackList(plOptions[0]);
-      setCurrentTrack(plOptions[0][0].track);
-      setTrackIndex(0);
-    })();
-  }, [plOptions]);
+  // useEffect(()=>{
+  //   console.log(JSON.stringify(plOptions));
+  //   (async function _ (){
+  //     updateTrackList(plOptions[0].tracks);
+  //   })();
+  // }, [plOptions]);
 
   // Auto-play when track changes
   useEffect(()=>{if (!showModal) document.getElementById('audioPlayer').play()},[currentTrack, showModal]);
-
-  const nextTrack = () => {
-    const newIndex = (trackIndex + 1)%trackList.length;
-    setTrackIndex(newIndex);
-    setCurrentTrack(trackList[newIndex].track);
-    setUserAnswer("");
-  }
 
   return (
     <div className="App">
       <InfoButton setShowModal={setShowModal}/>
       <h1 id="siteLogo">Song Genius</h1>
       <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl}/>
+      <PlaylistSelection plOptions={plOptions} updateTrackList={updateTrackList}/>
       <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm currentTrack={currentTrack} nextTrack={nextTrack} userAnswer={userAnswer} setUserAnswer={setUserAnswer}/>
       <SkipButton nextTrack={nextTrack}/>

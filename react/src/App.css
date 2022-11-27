@@ -50,6 +50,12 @@ button {
 
 }
 
+@media (max-width: 700px) {
+  .tut-modal {
+    font-size: 1rem;
+  }
+}
+
 .tut-modal ol {
   text-align: left;
 }

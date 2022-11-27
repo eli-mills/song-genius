@@ -61,14 +61,21 @@ const requestSpotify = async urlQuery => {
 
   console.log(`Server sending request to ${url}`);
   
-  return fetch(url, {headers: getHeaders()})        // Attempt with current accessToken
-    .then( (res) => res.json() )
-    .catch( () => {
-      getApiToken()                                 // Refresh accessToken and attempt again
-      .then(()=>fetch(url, {headers: getHeaders()}))
-      .then((res)=>res.json())
-      .catch((err)=>console.error(`Server error in resolving Spotify request to ${url}:\n${err}`));
-    });
+  try {
+    let results = await fetch(url, {headers: getHeaders()})        // Attempt with current accessToken
+    let resultsParsed = await results.json();
+
+    if (resultsParsed.error) {
+      await getApiToken();                                        // Refresh accessToken and attempt again
+      results = await fetch(url, {headers: getHeaders()});
+      resultsParsed = await results.json();
+    }
+
+    return resultsParsed.error ? new Error(`Spotify API error: improper fetch:\n${resultsParsed}`) : resultsParsed;
+  } catch (err) {
+    console.error(`Server error in resolving Spotify request to ${url}:\n${err}`)
+
+  }
 }
 
 

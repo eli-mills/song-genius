@@ -4,15 +4,14 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 
 /*************************************
     SPOTIFY API CLIENT CREDENTIALS
 *************************************/
-const creds = require('./client-creds');
-const client_id = creds['CLIENT_ID'];
-const client_secret = creds['CLIENT_SECRET'];
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
 let accessToken;
 
 

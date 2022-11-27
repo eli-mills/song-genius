@@ -183,6 +183,7 @@ app.get('/api/plTracks/:playlistId', async (req, res, next)=>{
     // Eliminate null preview_urls
     const cleanedPlaylistTracks = playlistTracks.filter((el)=>el.track["preview_url"] != null);
     console.log(`Sending tracks: ${JSON.stringify(cleanedPlaylistTracks)}`);
+    res.header('Access-Control-Allow-Origin', '*');
     res.json(cleanedPlaylistTracks);
 
   } catch (err) {

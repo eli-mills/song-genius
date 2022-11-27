@@ -15,12 +15,16 @@ function App() {
   let [currentTrack, setCurrentTrack] = useState(0);  
   let [userAnswer, setUserAnswer] = useState("");
   let [plOptions, setPlOptions] = useState([]);
+  const serverUrl = 'https://song-genius-api.onrender.com';
 
   useEffect(()=>{
     (async function _ () {
       try {
         console.log("Sending fetch request.");
-        const data = await fetch("/api/plTracks/37i9dQZF1DZ06evO4ohLfG", {headers: {"Accept":"application/json"}});
+        const fetchOptions = {
+          headers: {"Accept":"application/json"}
+        };
+        const data = await fetch(`${serverUrl}/api/plTracks/37i9dQZF1DZ06evO4ohLfG`, fetchOptions);
         const dataParsed = await data.json();
         console.log(`Received data: ${JSON.stringify(dataParsed)}`);
         setTrackList(dataParsed);
@@ -55,7 +59,7 @@ function App() {
     <div className="App">
       <InfoButton setShowModal={setShowModal}/>
       <h1 id="siteLogo">Song Genius</h1>
-      <PlaylistSearch setPlOptions={setPlOptions}/>
+      <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl}/>
       <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm currentTrack={currentTrack} nextTrack={nextTrack} userAnswer={userAnswer} setUserAnswer={setUserAnswer}/>
       <SkipButton nextTrack={nextTrack}/>

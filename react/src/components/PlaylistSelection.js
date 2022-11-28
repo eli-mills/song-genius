@@ -16,7 +16,7 @@ function PlaylistSelection ({plOptions, setPlIndex, plIndex, setShowPls}) {
                 })
             }
             </ul>
-            <button onClick={()=>{setShowPls(false);document.getElementById('audio-player').play()}}>Choose Playlist and Start</button>
+            {plIndex !== null && plOptions[0] && <button onClick={()=>{setShowPls(false);document.getElementById('audio-player').play()}}>Choose Playlist and Start</button>}
         </div>
     );
 }

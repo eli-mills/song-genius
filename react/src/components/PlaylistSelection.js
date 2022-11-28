@@ -3,7 +3,13 @@ import PlaylistPreview from './PlaylistPreview';
 import {ImCancelCircle, ImSpinner2} from 'react-icons/im';
 
 
-function PlaylistSelection ({plOptions, setPlIndex, plIndex, setShowPls}) {
+function PlaylistSelection ({plOptions, setPlIndex, plIndex, setShowPls, setGameActive}) {
+
+    const clickButton = () => {
+        setShowPls(false);
+        document.getElementById('audio-player').play();
+        setGameActive(true);
+    }
 
     return (
         <div id="pl-select-bg">
@@ -16,7 +22,7 @@ function PlaylistSelection ({plOptions, setPlIndex, plIndex, setShowPls}) {
                 })
             }
             </ul>
-            {plIndex !== null && plOptions[0] && <button onClick={()=>{setShowPls(false);document.getElementById('audio-player').play()}}>Choose Playlist and Start</button>}
+            {plIndex !== null && plOptions[0] && <button onClick={clickButton}>Choose Playlist and Start</button>}
         </div>
     );
 }

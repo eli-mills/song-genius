@@ -74,7 +74,7 @@ button {
 }
 
 
-#siteLogo {
+#site-logo {
   color: var(--fg);
   font-family: 'URW Chancery L, cursive';
   font-style: italic;
@@ -84,26 +84,26 @@ button {
   padding-top: 2rem;
 }
 
-#playlistSearch {
+#playlist-search {
   margin: 1rem;
   display:block;
 }
 
-#audioPlayer {
+#audio-player {
   margin: 1rem;
 }
 
-#guessForm {
+#guess-form {
   margin: 1rem;
 }
 
-#infoButton {
+#info-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
 }
 
-#plSelectBg{
+#pl-select-bg{
   background-color: var(--fg);
   position: relative;
   z-index: 1;
@@ -112,39 +112,54 @@ button {
   border: .5rem solid var(--border);
 }
 
-#plSelect {
+#pl-select {
   list-style: none;
   width: 50%;
   margin: auto;
 
 }
 
-.plPreview {
+.pl-preview {
   text-align: center;
   padding: .2rem;
 }
 
-.plPreview img {
+.pl-preview img {
   display:block;
   margin: 0 auto;
 }
 
+/*
+Styling for load spinner from W3 schools:
+https://www.w3schools.com/howto/howto_css_loader.asp
+*/
+.spin-loader {
+  animation: spin 1s linear infinite;
+  display: block;
+  margin: auto;
+  font-size: 2rem;
+  color: var(--bg);
+}
 
+@keyframes spin {
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(360deg) }
+}
 
 @media (min-width: 700px) {
   .tut-modal {
     font-size: 2rem;
   }
 
-  #siteLogo {
+  #site-logo {
     font-size: 5rem;
   }
 
-  #plSelect {
+  #pl-select {
     display: flex;
   }
 
-  .plPreview {
+  .pl-preview {
     float: left;
     margin: .2rem;
   }

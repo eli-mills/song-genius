@@ -6,7 +6,7 @@ function PlaylistPreview ({playlist, setPlIndex, myIndex, plIndex}) {
         setPlIndex(myIndex);
     }
     return (
-        <div className={plIndex===myIndex? "plPreview selected" : "plPreview"} onClick={clickHandler}>
+        <div className={plIndex===myIndex? "pl-preview selected" : "pl-preview"} onClick={clickHandler}>
             <img src={playlist.imageUrl} alt="Spotify playlist cover" height='100px' width='100px'/>
             <h3>{playlist.name}</h3>
             <p>{playlist.description}</p>

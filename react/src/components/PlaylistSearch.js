@@ -1,23 +1,26 @@
 import React from 'react';
 
-function PlaylistSearch ( {setPlOptions, serverUrl} ) {
+function PlaylistSearch ( {setPlOptions, serverUrl, setShowPls} ) {
 
     const submitPlaylistSearch = (e) => {
         e.preventDefault();
-
+        setPlOptions([]);
+        setShowPls(true);
         (async function _ () {
-            const plSearchTerm = document.getElementById("plSearchTerm");
+            const plSearchTerm = document.getElementById("pl-search-term");
             const plOptions = await fetch(`${serverUrl}/api/plSearch/${plSearchTerm.value}`);
             const plOptionsParsed = await plOptions.json();
             setPlOptions(plOptionsParsed);
             plSearchTerm.value = "";
         })();
+
+        
     }
     
     return (
-        <form id="playlistSearch">
-            <input type="text" id="plSearchTerm"/>
-            <button onClick={submitPlaylistSearch}>Search</button>
+        <form id="playlist-search" onSubmit={submitPlaylistSearch}>
+            <input type="text" id="pl-search-term"/>
+            <button >Search</button>
 
         </form>
     );

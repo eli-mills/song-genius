@@ -17,6 +17,8 @@ function App() {
   let [userAnswer, setUserAnswer] = useState("");
   let [plOptions, setPlOptions] = useState([]);
   let [plIndex, setPlIndex] = useState(null);
+  let [showPls, setShowPls] = useState(false);
+
   const serverUrl = ''//'https://song-genius-api.onrender.com';
 
   const nextTrack = () => {
@@ -35,18 +37,24 @@ function App() {
   }
 
   useEffect(()=>{
-    if (plIndex != null) updateTrackList(plOptions[plIndex].tracks);
+    setPlIndex(null)},[plOptions])
+
+  useEffect(()=>{
+    if (plIndex !== null && plOptions !== []) {
+
+      updateTrackList(plOptions[plIndex].tracks);
+    };
   },[plIndex, plOptions]);
 
   // Auto-play when track changes
-  useEffect(()=>{if (!showModal) document.getElementById('audioPlayer').play()},[currentTrack, showModal]);
+  useEffect(()=>{if (!showModal) document.getElementById('audio-player').play()},[currentTrack, showModal]);
 
   return (
     <div className="App">
       <InfoButton setShowModal={setShowModal}/>
-      <h1 id="siteLogo">Song Genius</h1>
-      <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl}/>
-      <PlaylistSelection plOptions={plOptions} setPlIndex={setPlIndex} plIndex={plIndex}/>
+      <h1 id="site-logo">Song Genius</h1>
+      <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl} setShowPls={setShowPls}/>
+      {showPls && <PlaylistSelection plOptions={plOptions} setPlIndex={setPlIndex} plIndex={plIndex} setShowPls={setShowPls}/>}
       <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm currentTrack={currentTrack} nextTrack={nextTrack} userAnswer={userAnswer} setUserAnswer={setUserAnswer}/>
       <SkipButton nextTrack={nextTrack}/>

@@ -16,6 +16,7 @@ function App() {
   let [currentTrack, setCurrentTrack] = useState(0);  
   let [userAnswer, setUserAnswer] = useState("");
   let [plOptions, setPlOptions] = useState([]);
+  let [plIndex, setPlIndex] = useState(null);
   const serverUrl = ''//'https://song-genius-api.onrender.com';
 
   const nextTrack = () => {
@@ -26,35 +27,16 @@ function App() {
   }
 
   const updateTrackList = tl => {
-    setTrackList(tl);
-    setCurrentTrack(tl[0].track);
-    setTrackIndex(0);
+    if (tl) {  
+      setTrackList(tl);
+      setCurrentTrack(tl[0].track);
+      setTrackIndex(0);
+    }
   }
 
   useEffect(()=>{
-    (async function _ () {
-      try {
-        console.log("Sending fetch request.");
-        const fetchOptions = {
-          headers: {"Accept":"application/json"}
-        };
-        const data = await fetch(`${serverUrl}/api/plTracks/37i9dQZF1DZ06evO4ohLfG`, fetchOptions);
-        const dataParsed = await data.json();
-        console.log(`Received data: ${JSON.stringify(dataParsed)}`);
-        updateTrackList(dataParsed);
-      } catch (err) {
-        console.error(err);
-      }
-    })();
-  }, []);
-
-  // Temporary: set tracklist to the first item in plOptions when plOptions updates.
-  // useEffect(()=>{
-  //   console.log(JSON.stringify(plOptions));
-  //   (async function _ (){
-  //     updateTrackList(plOptions[0].tracks);
-  //   })();
-  // }, [plOptions]);
+    if (plIndex != null) updateTrackList(plOptions[plIndex].tracks);
+  },[plIndex, plOptions]);
 
   // Auto-play when track changes
   useEffect(()=>{if (!showModal) document.getElementById('audioPlayer').play()},[currentTrack, showModal]);
@@ -64,7 +46,7 @@ function App() {
       <InfoButton setShowModal={setShowModal}/>
       <h1 id="siteLogo">Song Genius</h1>
       <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl}/>
-      <PlaylistSelection plOptions={plOptions} updateTrackList={updateTrackList}/>
+      <PlaylistSelection plOptions={plOptions} setPlIndex={setPlIndex} plIndex={plIndex}/>
       <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm currentTrack={currentTrack} nextTrack={nextTrack} userAnswer={userAnswer} setUserAnswer={setUserAnswer}/>
       <SkipButton nextTrack={nextTrack}/>

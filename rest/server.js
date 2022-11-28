@@ -89,7 +89,8 @@ const requestSpotify = async urlQuery => {
 const getPlaylistTracks = async (playlistId) => {
   const queryParams = new URLSearchParams({
     fields: 'items(track(name,artists(name),preview_url,popularity))',
-    limit: 50
+    limit: 50,
+    market: "US"
   });
   const trackList = await requestSpotify(`playlists/${playlistId}/tracks?${queryParams}`);
   return trackList.items;

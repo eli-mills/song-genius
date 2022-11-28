@@ -4,6 +4,7 @@
   --text: #767b91;
   --border: #c7ccdb;
   --hl: #e1e5ee;
+  background-color: var(--bg);
 }
 
 audio {
@@ -21,7 +22,6 @@ button {
 }
 
 .App {
-  background-color: var(--bg);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@ button {
 .tut-modal {
   background-color: var(--fg);
   color: var(--text);
-  font-size: 2rem;
+  font-size: 1rem;
   width: 70%;
   margin: 50% auto;
   padding: 0.1rem;
@@ -61,29 +61,27 @@ button {
 }
 
 .close-button {
+  color: var(--bg);
+  text-align:right;
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  color: var(--hl);
+  top: .5rem;
+  right: .5rem;
 }
 
-.plPreview {
-  float: left;
-  margin: .2rem;
+.selected {
+  border: .2rem solid var(--border);
+  background-color: var(--hl);
 }
 
-.plPreview img {
-  display:block;
-  margin: 0 auto;
-}
 
 #siteLogo {
   color: var(--fg);
   font-family: 'URW Chancery L, cursive';
   font-style: italic;
   text-decoration: underline;
-  font-size: 5rem;
+  font-size: 3rem;
   display: block;
+  padding-top: 2rem;
 }
 
 #playlistSearch {
@@ -105,20 +103,51 @@ button {
   right: 1rem;
 }
 
-#plSelect {
-  list-style:none;
-  width: 50%;
-  margin-top: 2rem;
-  display: flex;
+#plSelectBg{
+  background-color: var(--fg);
+  position: relative;
+  z-index: 1;
+  padding: 1rem;
+  width: 75%;
+  border: .5rem solid var(--border);
 }
 
-@media (max-width: 700px) {
+#plSelect {
+  list-style: none;
+  width: 50%;
+  margin: auto;
+
+}
+
+.plPreview {
+  text-align: center;
+  padding: .2rem;
+}
+
+.plPreview img {
+  display:block;
+  margin: 0 auto;
+}
+
+
+
+@media (min-width: 700px) {
   .tut-modal {
-    font-size: 1rem;
+    font-size: 2rem;
   }
 
   #siteLogo {
-    font-size: 3rem;
-    padding-top: 2rem;
+    font-size: 5rem;
   }
+
+  #plSelect {
+    display: flex;
+  }
+
+  .plPreview {
+    float: left;
+    margin: .2rem;
+  }
+  
+  
 }

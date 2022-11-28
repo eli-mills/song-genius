@@ -1,10 +1,11 @@
 import React from 'react';
+import {ImCancelCircle} from 'react-icons/im';
 
 function Modal ({setShowModal}) {
     return (
         <div className='tut-modal-bg' onClick={()=>setShowModal(false)}>
             <div className="tut-modal" onClick={e=>e.stopPropagation()}>        {/* e.stopPropagation stops click on Modal from closing Modal.*/} 
-                <span className="close-button" onClick={()=>setShowModal(false)}>X</span>
+                <ImCancelCircle className="close-button" onClick={()=>setShowModal(false)} />
                 <h1>How to Play</h1>
                 <ol>
                     <li>Use the search bar to search for a genre, artist, or playlist.</li>

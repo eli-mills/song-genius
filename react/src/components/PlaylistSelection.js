@@ -12,10 +12,11 @@ function PlaylistSelection ({plOptions, setPlIndex, plIndex, setShowPls}) {
             <ul id="pl-select">
             { 
                 plOptions.map( (el, index) => {
-                    return <li key={index}> <PlaylistPreview playlist={el} setPlIndex={setPlIndex} myIndex={index} plIndex={plIndex}/></li>
+                    return <PlaylistPreview key={index} playlist={el} setPlIndex={setPlIndex} myIndex={index} plIndex={plIndex}/>
                 })
             }
             </ul>
+            <button onClick={()=>{setShowPls(false);document.getElementById('audio-player').play()}}>Choose Playlist and Start</button>
         </div>
     );
 }

@@ -62,7 +62,6 @@ button {
 
 .close-button {
   color: var(--bg);
-  text-align:right;
   position: absolute;
   top: .5rem;
   right: .5rem;
@@ -107,21 +106,23 @@ button {
   background-color: var(--fg);
   position: relative;
   z-index: 1;
-  padding: 1rem;
+  padding: .5rem;
   width: 75%;
   border: .5rem solid var(--border);
+  text-align: center;
 }
 
 #pl-select {
   list-style: none;
   width: 50%;
   margin: auto;
-
+  padding: 0;
 }
 
 .pl-preview {
   text-align: center;
   padding: .2rem;
+  margin: .2rem auto;
 }
 
 .pl-preview img {
@@ -157,11 +158,12 @@ https://www.w3schools.com/howto/howto_css_loader.asp
 
   #pl-select {
     display: flex;
+    width: 100%;
   }
 
   .pl-preview {
     float: left;
-    margin: .2rem;
+    max-width: 25%;
   }
   
   

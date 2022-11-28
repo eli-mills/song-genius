@@ -7,6 +7,7 @@ import SkipButton from './components/SkipButton';
 import GuessForm from './components/GuessForm';
 import PlaylistSearch from './components/PlaylistSearch';
 import PlaylistSelection from './components/PlaylistSelection';
+import ShowPlaylists from './components/ShowPlaylists';
 
 function App() {
 
@@ -44,16 +45,17 @@ function App() {
 
       updateTrackList(plOptions[plIndex].tracks);
     };
-  },[plIndex, plOptions]);
+  },[plIndex]);
 
   // Auto-play when track changes
-  useEffect(()=>{if (!showModal) document.getElementById('audio-player').play()},[currentTrack, showModal]);
+  useEffect(()=>{if (!showPls && !showModal) {document.getElementById('audio-player').play()}},[currentTrack]);
 
   return (
     <div className="App">
       <InfoButton setShowModal={setShowModal}/>
       <h1 id="site-logo">Song Genius</h1>
       <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl} setShowPls={setShowPls}/>
+      {!showPls && plOptions[0] && <ShowPlaylists setShowPls={setShowPls}/>}
       {showPls && <PlaylistSelection plOptions={plOptions} setPlIndex={setPlIndex} plIndex={plIndex} setShowPls={setShowPls}/>}
       <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm currentTrack={currentTrack} nextTrack={nextTrack} userAnswer={userAnswer} setUserAnswer={setUserAnswer}/>

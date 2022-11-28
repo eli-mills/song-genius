@@ -20,7 +20,7 @@ function App() {
   let [plIndex, setPlIndex] = useState(null);
   let [showPls, setShowPls] = useState(false);
 
-  const serverUrl = ''//'https://song-genius-api.onrender.com';
+  const serverUrl = 'https://song-genius-api.onrender.com';
 
   const nextTrack = () => {
     const newIndex = (trackIndex + 1)%trackList.length;

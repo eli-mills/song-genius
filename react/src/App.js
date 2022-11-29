@@ -139,7 +139,7 @@ function App() {
 
   // Stop timer when hits 0
   useEffect(()=>{
-    if (timer == 0) {
+    if (timer === 0) {
       setGameActive(false);
       setShowGameOver(true);
       document.getElementById("audio-player").pause();
@@ -158,7 +158,7 @@ function App() {
       <div id="result-modal-container">
         <ResultModal resultMessage={resultMessage}/>
       </div>
-      <Timer timer={timer}/>
+      <Timer timer={timer} score={score}/>
       <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm userAnswer={userAnswer} setUserAnswer={setUserAnswer} evaluateAnswer={evaluateAnswer}/>
       <SkipButton nextTrack={nextTrack} skipTrack={skipTrack}/>

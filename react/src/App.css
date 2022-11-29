@@ -101,6 +101,7 @@ button {
 
 #guess-form {
   margin: 1rem;
+  text-align: center;
 }
 
 #info-button {
@@ -147,10 +148,15 @@ button {
 #timer {
   color: var(--fg);
   height: 3rem;
-  width: 50%;
-  font-size: 3rem;
+  width: 100%;
+  font-size: 2rem;
   text-align: center;
   line-height: 3rem;
+}
+
+#timer span {
+  width: 50%;
+  margin: 0 2rem;
 }
 
 .result-correct {

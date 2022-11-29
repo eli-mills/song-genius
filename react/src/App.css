@@ -44,11 +44,13 @@ button {
   color: var(--text);
   font-size: 1rem;
   width: 70%;
+  max-height: 500px;
   margin: 50% auto;
   padding: 0.1rem;
   text-align: center;
   border: 1rem solid var(--border);
   position: relative; /* in order to position the close button */
+  overflow: scroll;
   
 }
 
@@ -93,6 +95,7 @@ button {
 #playlist-search {
   margin: 1rem;
   display:block;
+
 }
 
 #audio-player {
@@ -110,14 +113,8 @@ button {
   right: 1rem;
 }
 
-#pl-select-bg{
-  background-color: var(--fg);
-  position: relative;
-  z-index: 1;
-  padding: .5rem;
-  width: 75%;
-  border: .5rem solid var(--border);
-  text-align: center;
+#pl-select-modal {
+  border-width: .5rem;
 }
 
 #pl-select {
@@ -132,14 +129,12 @@ button {
   width: 75%;
   text-align: center;
   padding: 0;
-  position: relative;
+  margin: 1rem auto;
 }
 
 #result-modal {
   height: 100%;
   width: 100%;
-  margin: 1rem 0;
-  position: absolute;
   font-weight: 600;
   transition: opacity .2s ease-in;
   opacity: 0;

@@ -12,17 +12,20 @@ function PlaylistSelection ({plOptions, setPlIndex, plIndex, setShowPls, setGame
     }
 
     return (
-        <div id="pl-select-bg">
-            <ImCancelCircle className="close-button" onClick={()=>setShowPls(false)}/>
-            {!plOptions[0] && <ImSpinner2 className="spin-loader"/>}
-            <ul id="pl-select">
-            { 
-                plOptions.map( (el, index) => {
-                    return <PlaylistPreview key={index} playlist={el} setPlIndex={setPlIndex} myIndex={index} plIndex={plIndex}/>
-                })
-            }
-            </ul>
-            {plIndex !== null && plOptions[0] && <button onClick={clickButton}>Start Game</button>}
+        <div className="tut-modal-bg">
+            <div id="pl-select-modal" className="tut-modal">
+
+                <ImCancelCircle className="close-button" onClick={()=>setShowPls(false)}/>
+                {!plOptions[0] && <ImSpinner2 className="spin-loader"/>}
+                <ul id="pl-select">
+                { 
+                    plOptions.map( (el, index) => {
+                        return <PlaylistPreview key={index} playlist={el} setPlIndex={setPlIndex} myIndex={index} plIndex={plIndex}/>
+                    })
+                }
+                </ul>
+                {plIndex !== null && plOptions[0] && <button onClick={clickButton}>Start Game</button>}
+            </div>
         </div>
     );
 }

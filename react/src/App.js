@@ -100,6 +100,7 @@ function App() {
     setTrackIndex(0);
     setCurrentTrack(trackList[0].track);
     setUserAnswer("");
+    setPlayerHistory([]);
   }
 
   const tryAgain = () => {

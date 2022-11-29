@@ -31,6 +31,7 @@ function App() {
   let [showResult, setShowResult] = useState(false);
   let [resultMessage, setResultMessage] = useState("");
   let [resultTimer, setResultTimer] = useState(null);
+  let [playerHistory, setPlayerHistory] = useState([]); // [{track(obj), result(str)}]
 
   
 
@@ -51,6 +52,12 @@ function App() {
     }
   }
 
+  const updateHistory = (result) => {
+    const history = playerHistory;
+    history.push({currentTrack, result});
+    setPlayerHistory(history);
+  }
+
   const evaluateAnswer = () => {
     if (!gameActive) {return}
     const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;
@@ -59,6 +66,7 @@ function App() {
         document.getElementById("result-modal").className="result-correct";
         setResultMessage("Correct! +1 point");
         setScore(score + 1);
+        updateHistory("Correct");
         nextTrack();
     } else {
         document.getElementById("result-modal").className="result-incorrect";
@@ -74,6 +82,7 @@ function App() {
       setResultMessage(`Skipped: ${currentTrack.name} by ${currentTrack.artists[0].name}`);
       setUserAnswer("");
       flashResult();
+      updateHistory("Skipped");
       nextTrack();
       document.getElementById("guess-form-input").focus();
     }
@@ -126,6 +135,7 @@ function App() {
       document.getElementById("guess-form-input").focus();
     } else if (timer === 0) {
       setGameActive(false);
+      updateHistory("Time ran out")
     }
   }, [timer, gameActive]);
 
@@ -149,7 +159,7 @@ function App() {
 
   return (
     <div className="App">
-      {showGameOver && <GameOver score={score} tryAgain={tryAgain} choosePlaylist={choosePlaylist}/>}
+      {showGameOver && <GameOver score={score} tryAgain={tryAgain} choosePlaylist={choosePlaylist} playerHistory={playerHistory}/>}
       <InfoButton setShowModal={setShowModal}/>
       <h1 id="site-logo">Song Genius</h1>
       <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl} setShowPls={setShowPls}/>

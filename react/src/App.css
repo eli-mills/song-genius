@@ -138,7 +138,7 @@ button {
 #result-modal {
   height: 100%;
   width: 100%;
-  margin: 0;
+  margin: 1rem 0;
   position: absolute;
   font-weight: 600;
   transition: opacity .2s ease-in;
@@ -186,6 +186,16 @@ button {
 .pl-preview img {
   display:block;
   margin: 0 auto;
+}
+
+#guess-history {
+  list-style: none;
+  margin: auto;
+  padding: 1rem;
+}
+
+#guess-history li {
+  margin: 1rem 0;
 }
 
 /*

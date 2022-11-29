@@ -9,7 +9,7 @@ function PlaylistPreview ({playlist, setPlIndex, myIndex, plIndex}) {
         <li className={plIndex===myIndex? "pl-preview selected" : "pl-preview"} onClick={clickHandler}>
             <img src={playlist.imageUrl} alt="Spotify playlist cover" height='100px' width='100px'/>
             <h3>{playlist.name}</h3>
-            <p>{playlist.description}</p>
+            <p dangerouslySetInnerHTML={{__html: playlist.description}}></p>
         </li>
     );
 }

@@ -113,6 +113,7 @@ const searchForPlaylists = async (searchTerm) => {
   return playlists.playlists.items;
 }
 
+
 /**
  * Function: getFilteredTracklists
  *    Retrieves all tracks for each playlist, then checks for preview URLs and minimum popularity.
@@ -164,7 +165,7 @@ app.get('/api/plSearch/:searchTerm', async (req, res, next)=>{
   try {
     const playlistOptions = await searchForPlaylists(searchTerm);
     const trackLists = await getFilteredTracklists(playlistOptions);
-    console.log(`Server sending list of ${playlistOptions.length} playlists`);
+    console.log(`Server sending list of ${trackLists.length} playlists`);
     res.header('Access-Control-Allow-Origin', '*');
     res.json(trackLists);
 
@@ -173,28 +174,5 @@ app.get('/api/plSearch/:searchTerm', async (req, res, next)=>{
     next(err);
   }
 });
-
-
-// ROUTE plTracks: GET TRACKS FROM PLAYLIST
-app.get('/api/plTracks/:playlistId', async (req, res, next)=>{
-  // Reference https://developer.spotify.com/documentation/web-api/reference/#/operations/get-playlists-tracks
-
-  const playlistId = req.params.playlistId;
-  console.log(`Server received request for playlist tracks for ID ${playlistId}`);
-
-  try {
-    const playlistTracks = await getPlaylistTracks(playlistId);
-    // Eliminate null preview_urls
-    const cleanedPlaylistTracks = playlistTracks.filter((el)=>el.track["preview_url"] != null);
-    console.log(`Sending ${cleanedPlaylistTracks.length} tracks.`);
-    res.header('Access-Control-Allow-Origin', '*');
-    res.json(cleanedPlaylistTracks);
-
-  } catch (err) {
-    console.error(`Server error when retrieving tracks for playlist ID ${playlistId}:\n${err}`);
-    next(err);
-  }
-
-})
 
 app.listen(PORT, ()=>console.log(`Server listening on port ${PORT}`));

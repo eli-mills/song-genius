@@ -1,11 +1,13 @@
 import React from 'react';
+import {ImCancelCircle} from 'react-icons/im';
 
-function GameOver ({score, tryAgain, choosePlaylist, playerHistory}) {
+function GameOver ({score, tryAgain, choosePlaylist, playerHistory, setShowGameOver}) {
     
 
     return (
         <div id="game-over-bg" className="tut-modal-bg">
             <div id="game-over" className="tut-modal">
+                <ImCancelCircle className="close-button" onClick={()=>choosePlaylist()} />
                 <h1>Game Over!</h1>
                 <p>Your score: {score}</p>
                 <button onClick={()=>tryAgain()}>Try Again</button>

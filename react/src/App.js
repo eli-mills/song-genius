@@ -13,17 +13,20 @@ import GameOver from './components/GameOver';
 import ResultModal from './components/ResultModal';
 
 function App() {
-  const serverUrl = 'https://song-genius-api.onrender.com';
+  /********************
+   CONSTANTS AND STATE
+  *********************/
+  const serverUrl = ''//'https://song-genius-api.onrender.com';
   const gameTime = 60;
 
-  let [trackList, setTrackList] = useState([]);
-  let [showModal, setShowModal] = useState(true);
+  let [trackList, setTrackList] = useState([]);               // Data structure: [ {track: {name, artists: [{name}], preview_url, popularity}} ]
+  let [showModal, setShowModal] = useState(true); 
   let [trackIndex, setTrackIndex] = useState(0);
-  let [currentTrack, setCurrentTrack] = useState(0);  
-  let [userAnswer, setUserAnswer] = useState("");
-  let [plOptions, setPlOptions] = useState([]);
+  let [currentTrack, setCurrentTrack] = useState(0);          // Data structure: {track: {name, artists: [{name}], preview_url, popularity}}
+  let [userAnswer, setUserAnswer] = useState(""); 
+  let [plOptions, setPlOptions] = useState([]);               // Data structure: [ {name, description, imageUrl, tracks: [trackList (see above)]} ]
   let [plIndex, setPlIndex] = useState(null);
-  let [showPls, setShowPls] = useState(false);
+  let [showPls, setShowPls] = useState(false);                
   let [timer, setTimer] = useState(gameTime);
   let [gameActive, setGameActive] = useState(false);
   let [showGameOver, setShowGameOver] = useState(false);
@@ -31,9 +34,12 @@ function App() {
   let [showResult, setShowResult] = useState(false);
   let [resultMessage, setResultMessage] = useState("");
   let [resultTimer, setResultTimer] = useState(null);
-  let [playerHistory, setPlayerHistory] = useState([]); // [{track(obj), result(str)}]
+  let [playerHistory, setPlayerHistory] = useState([]);       // Data structure: [{track(obj), result(str)}]
 
   
+  /********************
+   FUNCTIONS - IN GAME
+  *********************/
 
   const nextTrack = () => {
     if (gameActive) {
@@ -58,20 +64,32 @@ function App() {
     setPlayerHistory(history);
   }
 
+  const flashResult = () => {
+    clearTimeout(resultTimer);
+    setShowResult(true);
+    setResultTimer(setTimeout(()=>setShowResult(false), 2000));
+  }
+
   const evaluateAnswer = () => {
     if (!gameActive) {return}
-    const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;
+
+    const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;                            // Matches up to first ( or - to avoid, e.g., (feat. artist)
     const trackTitleParsed = currentTrack.name.match(trackTitleRe)[0];
+
     if ( userAnswer.toLowerCase() === trackTitleParsed.toLowerCase() ) {
-        document.getElementById("result-modal").className="result-correct";
-        setResultMessage("Correct! +1 point");
-        setScore(score + 1);
-        updateHistory("Correct");
-        nextTrack();
+      // Correct guess
+      document.getElementById("result-modal").className="result-correct";
+      setResultMessage("Correct! +1 point");
+      setScore(score + 1);
+      updateHistory("Correct");
+      nextTrack();
     } else {
-        document.getElementById("result-modal").className="result-incorrect";
-        setResultMessage("Nope, try again!");
+      // Incorrect guess
+      document.getElementById("result-modal").className="result-incorrect";
+      setResultMessage("Nope, try again!");
     }
+
+    // Both cases
     flashResult();
     setUserAnswer("");
   }
@@ -88,12 +106,10 @@ function App() {
     }
   }
 
-  const flashResult = () => {
-    clearTimeout(resultTimer);
-    setShowResult(true);
-    setResultTimer(setTimeout(()=>setShowResult(false), 2000));
-  }
 
+  /********************
+   FUNCTIONS - END GAME
+  *********************/
   const resetGame = () => {
     setScore(0);
     setTimer(gameTime);
@@ -112,31 +128,39 @@ function App() {
   const choosePlaylist = () => {
       resetGame();
       setShowGameOver(false);
-      setShowPls(true);
   }
 
 
-
+  /********************
+    SIDE EFFECT HOOKS
+  *********************/
   useEffect(()=>{
-    setPlIndex(null)},[plOptions])
+    setPlIndex(null)
+  }, [plOptions]);
+
 
   useEffect(()=>{
     if (plIndex !== null && plOptions !== []) {
-
       updateTrackList(plOptions[plIndex].tracks);
     };
   },[plIndex]);
 
-  // Auto-play when track changes
-  useEffect(()=>{if (!showPls && !showModal) {document.getElementById('audio-player').play()}},[currentTrack]);
+  useEffect(()=>{
+    if (!showPls && !showModal) {
+      document.getElementById('audio-player').play();
+    }
+  },[currentTrack]);
 
   useEffect(()=>{
     if (gameActive && timer > 0) {
       setTimeout(()=>setTimer(timer-1), 1000);
       document.getElementById("guess-form-input").focus();
-    } else if (timer === 0) {
+    } else if (gameActive && timer === 0) {
       setGameActive(false);
-      updateHistory("Time ran out")
+      updateHistory("Time ran out");
+      setShowGameOver(true);
+      document.getElementById("audio-player").pause();
+      document.getElementById("guess-form-input").blur();
     }
   }, [timer, gameActive]);
 
@@ -148,16 +172,10 @@ function App() {
     }
   }, [showResult])
 
-  // Stop timer when hits 0
-  useEffect(()=>{
-    if (timer === 0) {
-      setGameActive(false);
-      setShowGameOver(true);
-      document.getElementById("audio-player").pause();
-      document.getElementById("guess-form-input").blur();
-    } 
-  }, [timer]);
 
+  /********************
+          APP
+  *********************/
   return (
     <div className="App">
       {showGameOver && <GameOver score={score} tryAgain={tryAgain} choosePlaylist={choosePlaylist} playerHistory={playerHistory}/>}

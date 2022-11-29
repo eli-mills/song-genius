@@ -146,7 +146,7 @@ function App() {
   },[plIndex]);
 
   useEffect(()=>{
-    if (!showPls && !showModal) {
+    if (!showPls && !showModal && gameActive) {
       document.getElementById('audio-player').play();
     }
   },[currentTrack]);

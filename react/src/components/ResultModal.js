@@ -2,9 +2,11 @@ import React from 'react';
 
 function ResultModal ({resultMessage}) {
     return (
-        <div id="resultModal">
-            <p>{resultMessage}</p>
-        </div>
+       
+            <div id="result-modal">
+                <p>{resultMessage}</p>
+            </div>
+        
     );
 }
 

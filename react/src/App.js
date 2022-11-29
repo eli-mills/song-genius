@@ -52,13 +52,16 @@ function App() {
   }
 
   const evaluateAnswer = () => {
+    if (!gameActive) {return}
     const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;
     const trackTitleParsed = currentTrack.name.match(trackTitleRe)[0];
     if ( userAnswer.toLowerCase() === trackTitleParsed.toLowerCase() ) {
-        setResultMessage("Correct! +1 point")
+        document.getElementById("result-modal").className="result-correct";
+        setResultMessage("Correct! +1 point");
         setScore(score + 1);
         nextTrack();
     } else {
+        document.getElementById("result-modal").className="result-incorrect";
         setResultMessage("Nope, try again!");
     }
     flashResult();
@@ -66,10 +69,14 @@ function App() {
   }
 
   const skipTrack = () => {
-    setResultMessage(`Skipped: ${currentTrack.name} by ${currentTrack.artists[0].name}`);
-    setUserAnswer("");
-    flashResult();
-    nextTrack();
+    if (gameActive) {
+      document.getElementById("result-modal").className="result-skipped";
+      setResultMessage(`Skipped: ${currentTrack.name} by ${currentTrack.artists[0].name}`);
+      setUserAnswer("");
+      flashResult();
+      nextTrack();
+      document.getElementById("guess-form-input").focus();
+    }
   }
 
   const flashResult = () => {
@@ -116,10 +123,19 @@ function App() {
   useEffect(()=>{
     if (gameActive && timer > 0) {
       setTimeout(()=>setTimer(timer-1), 1000);
+      document.getElementById("guess-form-input").focus();
     } else if (timer === 0) {
       setGameActive(false);
     }
   }, [timer, gameActive]);
+
+  useEffect(()=>{
+    if (showResult) {
+      document.getElementById("result-modal").style.opacity=1;
+    } else {
+      document.getElementById("result-modal").style.opacity=0;
+    }
+  }, [showResult])
 
   // Stop timer when hits 0
   useEffect(()=>{
@@ -127,13 +143,9 @@ function App() {
       setGameActive(false);
       setShowGameOver(true);
       document.getElementById("audio-player").pause();
+      document.getElementById("guess-form-input").blur();
     } 
   }, [timer]);
-
-  
-  // useEffect(()=>{
-  //   if (resultMessage !== "") flashResult()
-  // }, [resultMessage])
 
   return (
     <div className="App">
@@ -143,9 +155,11 @@ function App() {
       <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl} setShowPls={setShowPls}/>
       {!showPls && plOptions[0] && <ShowPlaylists setShowPls={setShowPls}/>}
       {showPls && <PlaylistSelection plOptions={plOptions} setPlIndex={setPlIndex} plIndex={plIndex} setShowPls={setShowPls} setGameActive={setGameActive}/>}
-      <AudioPlayer currentTrack={currentTrack}/>
+      <div id="result-modal-container">
+        <ResultModal resultMessage={resultMessage}/>
+      </div>
       <Timer timer={timer}/>
-      {showResult && <ResultModal resultMessage={resultMessage}/>}
+      <AudioPlayer currentTrack={currentTrack}/>
       <GuessForm userAnswer={userAnswer} setUserAnswer={setUserAnswer} evaluateAnswer={evaluateAnswer}/>
       <SkipButton nextTrack={nextTrack} skipTrack={skipTrack}/>
       {showModal && <Modal setShowModal={setShowModal}/>}

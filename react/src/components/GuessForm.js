@@ -9,7 +9,7 @@ function GuessForm ( { userAnswer, setUserAnswer, evaluateAnswer } ) {
     
     return (
         <form id="guess-form">
-            <input type="text" autoFocus value={userAnswer} onChange={e=>setUserAnswer(e.target.value)}/>
+            <input type="text" id="guess-form-input" value={userAnswer} onChange={e=>setUserAnswer(e.target.value)}/>
             <button onClick={submitGuess}>Submit Guess</button>
         </form>        
     );

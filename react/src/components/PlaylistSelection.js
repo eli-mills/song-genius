@@ -22,7 +22,7 @@ function PlaylistSelection ({plOptions, setPlIndex, plIndex, setShowPls, setGame
                 })
             }
             </ul>
-            {plIndex !== null && plOptions[0] && <button onClick={clickButton}>Choose Playlist and Start</button>}
+            {plIndex !== null && plOptions[0] && <button onClick={clickButton}>Start Game</button>}
         </div>
     );
 }

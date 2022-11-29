@@ -1,24 +1,16 @@
 import React from 'react';
 
-function GuessForm ( { currentTrack, nextTrack, userAnswer, setUserAnswer } ) {
+function GuessForm ( { userAnswer, setUserAnswer, evaluateAnswer } ) {
     
-    const evaluateAnswer = (e) => {
+    const submitGuess = (e) => {
         e.preventDefault();
-        const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;
-        const trackTitleParsed = currentTrack.name.match(trackTitleRe)[0];
-        if ( userAnswer.toLowerCase() === trackTitleParsed.toLowerCase() ) {
-            console.log("correct");
-            setUserAnswer("");
-            nextTrack();
-        } else {
-            console.log("incorrect, try again");
-        }
+        evaluateAnswer();
     }
     
     return (
         <form id="guess-form">
             <input type="text" autoFocus value={userAnswer} onChange={e=>setUserAnswer(e.target.value)}/>
-            <button onClick={evaluateAnswer}>Submit Guess</button>
+            <button onClick={submitGuess}>Submit Guess</button>
         </form>        
     );
 }

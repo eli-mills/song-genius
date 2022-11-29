@@ -9,8 +9,12 @@ import PlaylistSearch from './components/PlaylistSearch';
 import PlaylistSelection from './components/PlaylistSelection';
 import ShowPlaylists from './components/ShowPlaylists';
 import Timer from './components/Timer';
+import GameOver from './components/GameOver';
+import ResultModal from './components/ResultModal';
 
 function App() {
+  const serverUrl = 'https://song-genius-api.onrender.com';
+  const gameTime = 60;
 
   let [trackList, setTrackList] = useState([]);
   let [showModal, setShowModal] = useState(true);
@@ -20,11 +24,15 @@ function App() {
   let [plOptions, setPlOptions] = useState([]);
   let [plIndex, setPlIndex] = useState(null);
   let [showPls, setShowPls] = useState(false);
-  let [timer, setTimer] = useState(30);
+  let [timer, setTimer] = useState(gameTime);
   let [gameActive, setGameActive] = useState(false);
-  let [timerId, setTimerId] = useState(null);
+  let [showGameOver, setShowGameOver] = useState(false);
+  let [score, setScore] = useState(0);
+  let [showResult, setShowResult] = useState(false);
+  let [resultMessage, setResultMessage] = useState("");
+  let [resultTimer, setResultTimer] = useState(null);
 
-  const serverUrl = 'https://song-genius-api.onrender.com';
+  
 
   const nextTrack = () => {
     if (gameActive) {
@@ -43,14 +51,54 @@ function App() {
     }
   }
 
-  const startTimer = () => {
-    const timerId = setInterval(()=>setTimer(timer-1), 1000);
-    return timerId;
+  const evaluateAnswer = () => {
+    const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;
+    const trackTitleParsed = currentTrack.name.match(trackTitleRe)[0];
+    if ( userAnswer.toLowerCase() === trackTitleParsed.toLowerCase() ) {
+        setResultMessage("Correct! +1 point")
+        setScore(score + 1);
+        nextTrack();
+    } else {
+        setResultMessage("Nope, try again!");
+    }
+    flashResult();
+    setUserAnswer("");
   }
 
-  const stopTimer = stopTimerId => {
-    clearInterval(stopTimerId);
+  const skipTrack = () => {
+    setResultMessage(`Skipped: ${currentTrack.name} by ${currentTrack.artists[0].name}`);
+    setUserAnswer("");
+    flashResult();
+    nextTrack();
   }
+
+  const flashResult = () => {
+    clearTimeout(resultTimer);
+    setShowResult(true);
+    setResultTimer(setTimeout(()=>setShowResult(false), 2000));
+  }
+
+  const resetGame = () => {
+    setScore(0);
+    setTimer(gameTime);
+    setTrackIndex(0);
+    setCurrentTrack(trackList[0].track);
+    setUserAnswer("");
+  }
+
+  const tryAgain = () => {
+    resetGame();
+    setShowGameOver(false);
+    setGameActive(true);
+  }
+
+  const choosePlaylist = () => {
+      resetGame();
+      setShowGameOver(false);
+      setShowPls(true);
+  }
+
+
 
   useEffect(()=>{
     setPlIndex(null)},[plOptions])
@@ -76,14 +124,20 @@ function App() {
   // Stop timer when hits 0
   useEffect(()=>{
     if (timer == 0) {
-      stopTimer(timerId); 
       setGameActive(false);
+      setShowGameOver(true);
       document.getElementById("audio-player").pause();
     } 
   }, [timer]);
 
+  
+  // useEffect(()=>{
+  //   if (resultMessage !== "") flashResult()
+  // }, [resultMessage])
+
   return (
     <div className="App">
+      {showGameOver && <GameOver score={score} tryAgain={tryAgain} choosePlaylist={choosePlaylist}/>}
       <InfoButton setShowModal={setShowModal}/>
       <h1 id="site-logo">Song Genius</h1>
       <PlaylistSearch setPlOptions={setPlOptions} serverUrl={serverUrl} setShowPls={setShowPls}/>
@@ -91,8 +145,9 @@ function App() {
       {showPls && <PlaylistSelection plOptions={plOptions} setPlIndex={setPlIndex} plIndex={plIndex} setShowPls={setShowPls} setGameActive={setGameActive}/>}
       <AudioPlayer currentTrack={currentTrack}/>
       <Timer timer={timer}/>
-      <GuessForm currentTrack={currentTrack} nextTrack={nextTrack} userAnswer={userAnswer} setUserAnswer={setUserAnswer}/>
-      <SkipButton nextTrack={nextTrack}/>
+      {showResult && <ResultModal resultMessage={resultMessage}/>}
+      <GuessForm userAnswer={userAnswer} setUserAnswer={setUserAnswer} evaluateAnswer={evaluateAnswer}/>
+      <SkipButton nextTrack={nextTrack} skipTrack={skipTrack}/>
       {showModal && <Modal setShowModal={setShowModal}/>}
     </div>
   );

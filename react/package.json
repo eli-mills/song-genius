@@ -15,7 +15,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "source ../rest/export-creds && node ../rest/server.js & react-scripts start && fg",
+    "start": "source ../rest/export-creds && node ../rest/server.js > server-log.txt 2>&1 & react-scripts start && fg",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

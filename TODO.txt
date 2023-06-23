@@ -1,0 +1,7 @@
+FRONTEND
+[ ]     Fix song title modal moving text entry/controls if song title is lengthy
+[ ]     Improve color scheme/layout
+[ ]     Add button to stop game early
+
+
+BACKEND

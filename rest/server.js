@@ -10,8 +10,18 @@ const PORT = process.env.PORT;
 /*************************************
     SPOTIFY API CLIENT CREDENTIALS
 *************************************/
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
+const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token'
+const CLIENT_CREDS = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64');
+const TOKEN_REQUEST_HEADERS = {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${CLIENT_CREDS}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials'
+    })
+  };
 let accessToken;
 
 
@@ -24,16 +34,16 @@ const getHeaders = () => {return {Authorization:`Bearer ${accessToken}`,'Content
 
 /**
  * Function: getApiToken
- *    Sends Spotify API client credentials to token generator microservice. 
+ *    Sends Spotify API client credentials to Spotify token endpoint. 
  *    Expects to receive a valid bearer access token from microservice and
  *    sets the global variable accessToken to this value.
  */
 const getApiToken = async () => {
-  const urlString = `https://helpmeeeeeee.herokuapp.com/credentials/${client_id}/${client_secret}`;
   console.log("Sending request to token microservice, awaiting.");
-  const tokenPromise = await fetch(urlString);
+  const tokenPromise = await fetch(SPOTIFY_TOKEN_URL, TOKEN_REQUEST_HEADERS);
   console.log("Token received, parsing text.");
-  accessToken = await tokenPromise.text();    // Sets global variable accessToken
+  const { access_token } = await tokenPromise.json();
+  accessToken = access_token;                           // Sets global variable accessToken
   console.log(`accessToken = ${accessToken}`);
 }
 

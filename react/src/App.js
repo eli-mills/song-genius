@@ -16,7 +16,7 @@ function App() {
   /********************
    CONSTANTS AND STATE
   *********************/
-  const serverUrl = 'https://song-genius-api.onrender.com';
+  const serverUrl = process.env.NODE_ENV === 'production' ? 'https://song-genius-api.onrender.com' : 'http://localhost:3000';
   const gameTime = 60;
 
   let [trackList, setTrackList] = useState([]);               // Data structure: [ {track: {name, artists: [{name}], preview_url, popularity}} ]

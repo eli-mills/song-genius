@@ -1,9 +1,9 @@
 :root {
-  --bg: #2a324b;
-  --fg: #f7c59f;
-  --text: #767b91;
-  --border: #c7ccdb;
-  --hl: #e1e5ee;
+  --bg: #0b2027;
+  --fg: #40798c;
+  --border: #70A9A1;
+  --text: #f6f1d1;
+  --hl: #CFD7C7;
   background-color: var(--bg);
 }
 
@@ -81,7 +81,7 @@ button {
 
 
 #site-logo {
-  color: var(--fg);
+  /*color: var(--fg);*/
   font-family: 'URW Chancery L, cursive';
   font-style: italic;
   text-decoration: underline;
@@ -139,7 +139,7 @@ button {
 }
 
 #timer {
-  color: var(--fg);
+  /*color: var(--fg);*/
   height: 3rem;
   width: 100%;
   font-size: 2rem;

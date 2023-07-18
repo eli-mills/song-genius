@@ -92,8 +92,8 @@ function App() {
     } else {
       // Incorrect guess
       document.getElementById("result-modal").className="result-incorrect";
-      // setResultMessage("Nope, try again!");
-      setResultMessage(`Wrong: your guess "${standardizedGuess}" does not match answer "${standardizedTrackName}"`);
+      setResultMessage("Nope, try again!");
+      // setResultMessage(`Wrong: your guess "${standardizedGuess}" does not match answer "${standardizedTrackName}"`);
     }
 
     // Both cases

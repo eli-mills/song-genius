@@ -16,7 +16,7 @@ function App() {
   /********************
    CONSTANTS AND STATE
   *********************/
-  const serverUrl = process.env.NODE_ENV === 'production' ? 'https://song-genius-api.onrender.com' : 'http://localhost:3000';
+  const serverUrl = process.env.NODE_ENV === 'production' ? 'https://song-genius-api.onrender.com' : 'http://eli.local:3000';
   const gameTime = 60;
 
   let [trackList, setTrackList] = useState([]);               // Data structure: [ {track: {name, artists: [{name}], preview_url, popularity}} ]
@@ -70,13 +70,19 @@ function App() {
     setResultTimer(setTimeout(()=>setShowResult(false), 2000));
   }
 
+  const standardizeText = textToStandardize => {
+    const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;                  // Matches up to first ( or - to avoid, e.g., (feat. artist)
+    const smartQuoteRe = /[\u2018\u2019\u201c\u201d]/g;             // Matches smart quotes
+    const textPostRe = textToStandardize.replaceAll(smartQuoteRe, "'").match(trackTitleRe)[0];
+    return textPostRe.normalize("NFC").toLowerCase();
+  }
+
   const evaluateAnswer = () => {
     if (!gameActive) {return}
-
-    const trackTitleRe = /^.+?(?=(?:\s\(|\s-)|$)/;                            // Matches up to first ( or - to avoid, e.g., (feat. artist)
-    const trackTitleParsed = currentTrack.name.match(trackTitleRe)[0];
-
-    if ( userAnswer.toLowerCase() === trackTitleParsed.toLowerCase() ) {
+    const standardizedGuess = standardizeText(userAnswer);
+    const standardizedTrackName = standardizeText(currentTrack.name);
+    
+    if ( standardizedGuess === standardizedTrackName ) {
       // Correct guess
       document.getElementById("result-modal").className="result-correct";
       setResultMessage("Correct! +1 point");
@@ -86,7 +92,8 @@ function App() {
     } else {
       // Incorrect guess
       document.getElementById("result-modal").className="result-incorrect";
-      setResultMessage("Nope, try again!");
+      // setResultMessage("Nope, try again!");
+      setResultMessage(`Wrong: your guess "${standardizedGuess}" does not match answer "${standardizedTrackName}"`);
     }
 
     // Both cases

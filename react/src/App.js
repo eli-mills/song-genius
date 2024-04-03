@@ -141,6 +141,12 @@ function App() {
   /********************
     SIDE EFFECT HOOKS
   *********************/
+
+    useEffect(()=>{
+        const audioPlayer = document.querySelector("audio");
+        audioPlayer.volume = .1;
+    }, [])   // on page load, lower audio player volume
+
   useEffect(()=>{
     setPlIndex(null)
   }, [plOptions]);
